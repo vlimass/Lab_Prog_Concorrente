@@ -2,6 +2,8 @@
 
 Projetos realizados nas práticas de laboratório da disciplina de Programação Concorrente do curso de Ciência da Computação na UFRJ.
 
+<br>
+
 ## Laboratório 1: Introdução ao uso de threads em C
 
 ### Introdução
@@ -15,6 +17,7 @@ O objetivo deste Laboratório é aprender como criar programas concorrentes em C
 ### Atividade
 ***Objetivo***: Implementar o seu primeiro programa concorrente! Escreva um programa com ***duas*** threads (além da thread principal), para ***aumentar em 10%*** cada elemento de um vetor de 10000 elementos. (Para cada elemento a_i do vetor, calcular o novo valor e escrever o resultado na mesma posição do elemento.) 
 
+<br>
 
 ## Laboratório 2: Implementação e avaliação de aplicações concorrente (parte 1)
 
@@ -62,5 +65,4 @@ Considerando a máquina utilizada, que contém 8 núcleos de CPU, os resultados 
     - Tempo concorrente: 5,96369325s
     - Ganho de desempenho estimado: 7,935692701833717s
 
-
-    
+<br>
