@@ -64,5 +64,3 @@ Considerando a máquina utilizada, que contém 8 núcleos de CPU, os resultados 
     - Tempo sequencial: 47,326037s
     - Tempo concorrente: 5,96369325s
     - Ganho de desempenho estimado: 7,935692701833717s
-
-<br>
