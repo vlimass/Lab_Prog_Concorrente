@@ -77,3 +77,159 @@ O objetivo deste Laboratório é implementar uma ***versão concorrente do probl
 
 ***Objetivo:*** Projetar e implementar uma solução concorrente para o problema de multiplicação de matrizes, coletar informações sobre o seu tempo de execução, e calcular o ganho de desempenho obtido em relação a versão sequencial previamente implementada.
 
+### Dados levantados
+
+A partir da avaliação dos tempos médios de execução, os resultados obtidos foram: 
+
+- Em matrizes 500x500:
+    #### Sequencial 
+    - Tempo inicialização: 0.0019277
+    - Tempo processamento: 0.6991437
+    - Tempo finalização: 0.0017117
+
+    #### Concorrente com 1 thread
+
+    - Tempo inicialização: 0.0015236
+    - Tempo processamento: 0.7024403
+    - Tempo finalização: 0.0019716
+
+    #### Concorrente com 2 threads
+    
+    - Tempo inicialização: 0.0011446
+    - Tempo processamento: 0.365737
+    - Tempo finalização: 0.001898
+
+    #### Concorrente com 4 threads
+    
+    - Tempo inicialização: 0.001016
+    - Tempo processamento: 0.2007143
+    - Tempo finalização: 0.0017343
+
+    #### Concorrente com 8 threads
+    
+    - Tempo inicialização: 0.0011373
+    - Tempo processamento: 0.1600483
+    - Tempo finalização: 0.0015513
+
+
+- Em matrizes 1000x1000:
+    #### Sequencial 
+    - Tempo inicialização: 0.0053513 
+    - Tempo processamento: 5.658638
+    - Tempo finalização: 0.004509
+
+    #### Concorrente com 1 thread
+
+    - Tempo inicialização: 0.00379
+    - Tempo processamento: 5.686151
+    - Tempo finalização: 0.004976
+
+    #### Concorrente com 2 threads
+    
+    - Tempo inicialização: 0.0027156
+    - Tempo processamento: 2.8758673
+    - Tempo finalização: 0.0055546
+
+    #### Concorrente com 4 threads
+    
+    - Tempo inicialização: 0.003112
+    - Tempo processamento: 1.758017
+    - Tempo finalização: 0.0057
+
+    #### Concorrente com 8 threads
+    
+    - Tempo inicialização: 0.0029463
+    - Tempo processamento: 1.1567823
+    - Tempo finalização: 0.005535
+
+
+- Em matrizes 2000x2000:
+
+    #### Sequencial 
+    - Tempo inicialização: 0.013017
+    - Tempo processamento: 46.783231
+    - Tempo finalização: 0.018481
+
+    #### Concorrente com 1 thread
+
+    - Tempo inicialização: 
+    - Tempo processamento: 
+    - Tempo finalização: 
+
+    #### Concorrente com 2 threads
+    
+    - Tempo inicialização: 
+    - Tempo processamento: 
+    - Tempo finalização: 
+
+    #### Concorrente com 4 threads
+    
+    - Tempo inicialização: 
+    - Tempo processamento: 
+    - Tempo finalização: 
+
+    #### Concorrente com 8 threads
+    
+    - Tempo inicialização: 
+    - Tempo processamento: 
+    - Tempo finalização: 
+
+
+
+Considerando a máquina utilizada, que contém ***8 núcleos de CPU***, os resultados de tempo sequencial, tempo concorrente e ganho de desempenho estimado obtidos foram: 
+
+- Em matrizes 500x500: 
+    ***Tempo sequencial:*** 0.7027831s
+    #### Com 1 thread
+    - Tempo concorrente: 0.7059355s
+    - Ganho de desempenho: 0.99553443622
+
+    #### Com 2 threads
+    - Tempo concorrente: 0.3687796s
+    - Ganho de desempenho: 1.90569950182
+
+    #### Com 4 threads
+    - Tempo concorrente: 0.2034646s
+    - Ganho de desempenho: 3.45408046412
+
+    #### Com 8 threads
+    - Tempo concorrente: 0.1627369s
+    - Ganho de desempenho: 4.31852333429
+
+
+- Em matrizes 1000x1000: 
+    ***Tempo sequencial:*** 5.6684983
+    #### Com 1 thread
+    - Tempo concorrente: 5.694917
+    - Ganho de desempenho: 0.9953610035
+
+    #### Com 2 threads
+    - Tempo concorrente: 2.8841375
+    - Ganho de desempenho: 1.96540501276
+
+    #### Com 4 threads
+    - Tempo concorrente: 1.766829
+    - Ganho de desempenho: 3.208289144
+
+    #### Com 8 threads
+    - Tempo concorrente: 1.1652636
+    - Ganho de desempenho: 4.86456309113
+
+
+- Em matrizes 2000x2000: 
+    ***Tempo sequencial:*** 
+    #### Com 1 thread
+    - Tempo concorrente: 
+    - Ganho de desempenho: 
+
+    #### Com 2 threads
+    - Tempo concorrente: 
+    - Ganho de desempenho: 
+
+    #### Com 4 threads
+    - Tempo concorrente: 
+    - Ganho de desempenho: 
+
+    #### Com 8 threads
+    - Tempo concorrente: 
+    - Ganho de desempenho: 

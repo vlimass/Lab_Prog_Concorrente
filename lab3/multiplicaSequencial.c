@@ -98,11 +98,11 @@ int main(int argc, char*argv[]) {
    printf("Tempo multiplicação: %lf\n", delta);
 
    // imprime matriz resultante
-   for(int i=0; i<linhas1; i++) { 
-      for(int j=0; j<colunas2; j++)
-        fprintf(stdout, "%.6f ", matrizResultado[i*linhas1+j]);
-      fprintf(stdout, "\n");
-   }
+   // for(int i=0; i<linhas1; i++) { 
+   //    for(int j=0; j<colunas2; j++)
+   //      fprintf(stdout, "%.6f ", matrizResultado[i*linhas1+j]);
+   //    fprintf(stdout, "\n");
+   // }
 
    // Finalização 
    GET_TIME(inicio);
@@ -136,7 +136,7 @@ int main(int argc, char*argv[]) {
 
    GET_TIME(fim);
    delta = fim - inicio;
-   printf("Tempo finalização: %lf\n", delta);
+   printf("Tempo finalização: %lf\n\n", delta);
 
    return 0;
 }
