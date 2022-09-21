@@ -23,7 +23,7 @@ O objetivo deste Laboratório é aprender como criar programas concorrentes em C
 
 ### Introdução
 
-O objetivo deste Laboratorio é implementar uma versão sequencial do problema de multiplicação de matrizes e a partir dessa implementação avaliar a possibilidade de ganho de desempenho em uma futura implementação concorrente do problema. Usaremos a linguagem C.
+O objetivo deste Laboratório é implementar uma versão sequencial do problema de multiplicação de matrizes e a partir dessa implementação avaliar a possibilidade de ganho de desempenho em uma futura implementação concorrente do problema. Usaremos a linguagem C.
 
 ### Atividade
 
@@ -64,3 +64,16 @@ Considerando a máquina utilizada, que contém 8 núcleos de CPU, os resultados 
     - Tempo sequencial: 47,326037s
     - Tempo concorrente: 5,96369325s
     - Ganho de desempenho estimado: 7,935692701833717s
+
+<br>
+
+## Laboratório 3: Implementação e avaliação de aplicações concorrente (parte 2)
+
+### Introdução
+
+O objetivo deste Laboratório é implementar uma ***versão concorrente do problema de multiplicação de matrizes*** e avaliar o ganho de desempenho obtido.
+
+### Atividade
+
+***Objetivo:*** Projetar e implementar uma solução concorrente para o problema de multiplicação de matrizes, coletar informações sobre o seu tempo de execução, e calcular o ganho de desempenho obtido em relação a versão sequencial previamente implementada.
+
