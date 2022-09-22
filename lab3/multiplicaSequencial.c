@@ -95,7 +95,7 @@ int main(int argc, char*argv[]) {
 
    GET_TIME(fim);
    delta = fim - inicio;
-   printf("Tempo multiplicação: %lf\n", delta);
+   printf("Tempo processamento: %lf\n", delta);
 
    // imprime matriz resultante
    // for(int i=0; i<linhas1; i++) { 

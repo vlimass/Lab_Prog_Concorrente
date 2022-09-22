@@ -7,14 +7,13 @@ int numThreads;
 float *matriz1, *matriz2, *matrizResultado;
 int linhas1, colunas1, linhas2, colunas2; //dimensoes das matrizes
 
-
 // fluxo das threads
 void *multiplicaConcorrente (void *arg) {
    long int id = (long int) arg;
    float aux = 0; 
 
    if(colunas1 == linhas2) {
-      for(int i = id; i < linhas1 + numThreads; i += numThreads){
+      for(int i = id; i < linhas1; i += numThreads){
         for(int j = 0; j < colunas2; j++){
          matrizResultado[i*linhas1+j] = 0;
             for(int z = 0; z < linhas2; z++){
@@ -178,6 +177,7 @@ int main(int argc, char*argv[]) {
    free(matriz1);
    free(matriz2);
    free(matrizResultado);
+
 
    GET_TIME(fim);
    delta = fim - inicio;

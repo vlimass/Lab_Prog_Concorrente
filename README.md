@@ -146,9 +146,9 @@ A partir da avaliação dos tempos médios de execução, os resultados obtidos 
 - Em matrizes 2000x2000:
 
     #### Sequencial 
-    - Tempo inicialização: 0.013017
-    - Tempo processamento: 46.783231
-    - Tempo finalização: 0.018481
+    - Tempo inicialização: 0.0136376
+    - Tempo processamento: 29.105089
+    - Tempo finalização: 0.0128883
 
     #### Concorrente com 1 thread
 
