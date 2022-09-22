@@ -152,27 +152,27 @@ A partir da avaliação dos tempos médios de execução, os resultados obtidos 
 
     #### Concorrente com 1 thread
 
-    - Tempo inicialização: 
-    - Tempo processamento: 
-    - Tempo finalização: 
+    - Tempo inicialização: 0.0158346
+    - Tempo processamento: 29.8615773
+    - Tempo finalização: 0.015561
 
     #### Concorrente com 2 threads
     
-    - Tempo inicialização: 
-    - Tempo processamento: 
-    - Tempo finalização: 
+    - Tempo inicialização: 0.0140156
+    - Tempo processamento: 16.005618
+    - Tempo finalização: 0.0141126
 
     #### Concorrente com 4 threads
     
-    - Tempo inicialização: 
-    - Tempo processamento: 
-    - Tempo finalização: 
+    - Tempo inicialização: 0.011113
+    - Tempo processamento: 9.363465
+    - Tempo finalização: 0.0137223
 
     #### Concorrente com 8 threads
     
-    - Tempo inicialização: 
-    - Tempo processamento: 
-    - Tempo finalização: 
+    - Tempo inicialização: 0.0089146
+    - Tempo processamento: 7.032961
+    - Tempo finalização: 0.012217
 
 
 
@@ -217,19 +217,19 @@ Considerando a máquina utilizada, que contém ***8 núcleos de CPU***, os resul
 
 
 - Em matrizes 2000x2000: 
-    ***Tempo sequencial:*** 
+    ***Tempo sequencial:*** 29.1316149
     #### Com 1 thread
-    - Tempo concorrente: 
-    - Ganho de desempenho: 
+    - Tempo concorrente: 29.8929729
+    - Ganho de desempenho: 0.9745305359
 
     #### Com 2 threads
-    - Tempo concorrente: 
-    - Ganho de desempenho: 
+    - Tempo concorrente: 16.0337462
+    - Ganho de desempenho: 1.81689385229
 
     #### Com 4 threads
-    - Tempo concorrente: 
-    - Ganho de desempenho: 
+    - Tempo concorrente: 9.3883003
+    - Ganho de desempenho: 3.10297007649
 
     #### Com 8 threads
-    - Tempo concorrente: 
-    - Ganho de desempenho: 
+    - Tempo concorrente: 7.0540926
+    - Ganho de desempenho: 4.12974659561
