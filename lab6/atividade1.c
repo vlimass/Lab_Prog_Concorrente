@@ -7,7 +7,7 @@
 #define NT2 3 // número de threads T2
 #define NT3 3 // número de threads T3
 
-// base de dados
+// base de dados compartilhada
 int dados = 0;
 
 // variáveis de estado 
@@ -66,6 +66,7 @@ void FimEscr (int id, int type) {
 // threads tipo 1
 void *T1 (void *arg){
     int *id = (int*) arg;
+
     while(1){
         InicEscr(*id, 1);
         printf("T1[%d] está escrevendo\n", *id);
@@ -75,13 +76,15 @@ void *T1 (void *arg){
         FimEscr(*id, 1);
         sleep(1);
     }
+
     free(arg);
     pthread_exit(NULL);
 }
 
 // threads tipo 2
-void * T2 (void * arg) {
+void *T2 (void *arg) {
     int *id = (int *) arg;
+
     while(1) {
     InicLeit(*id, 2);
     printf("T2[%d] está lendo\n", *id);
@@ -93,18 +96,19 @@ void * T2 (void * arg) {
     FimLeit(*id, 2);
     sleep(1);
     } 
+
     free(arg);
     pthread_exit(NULL);
 }
 
 // threads tipo 3
-void * T3 (void * arg) {
+void *T3 (void *arg) {
     int *id = (int *) arg;
     int boba1, boba2;
 
     while(1) {
         InicLeit(*id, 3);
-        printf("T3[%d] esta lendo\n", *id);
+        printf("T3[%d] está lendo\n", *id);
 
         printf("Valor atual = %d\n", dados); // operação de leitura
 
@@ -123,6 +127,7 @@ void * T3 (void * arg) {
 
         sleep(1);
     } 
+
     free(arg);
     pthread_exit(NULL);
 }
