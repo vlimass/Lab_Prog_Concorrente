@@ -5,15 +5,15 @@
 #include<semaphore.h>
 
 #define N 5 // dim do Buffer
-#define P 3 // num de threads produtoras
-#define C 3 // num de threads consumidoras 
+#define P 2 // num de threads produtoras
+#define C 2 // num de threads consumidoras 
 
 // variaveis globais 
 int Buffer[N];
-int count = 0;
+int elemProd = 0; // qntd de elementos produzidos no buffer
 
 sem_t slotCheio, slotVazio; // condição
-sem_t mutexProd, mutexCons; // exclusão mútua
+sem_t mutex; // exclusão mútua com apenas um mutex para possibilitar a verificação dos logs
 
 // inicializa o buffer
 void IniciaBuffer(int n) {
@@ -34,26 +34,30 @@ void ImprimeBuffer(int n) {
 void Insere(int item, int id){
     static int in=0;
 
-    printf("P[%d] quer produzir\n", id);
-    //aguarda slot vazio
-    if(count > N) printf("P[%d] bloqueou\n", id);
-    sem_wait(&slotVazio);
-    printf("P[%d] desbloqueou\n", id);
-    //exclusao mutua entre produtores
-    sem_wait(&mutexProd);
-    Buffer[in] = item;
-    in = (in + 1) % N;
-    count++;
-    printf("P[%d] produziu\n", id);
+    while(elemProd < N){
+        printf("P[%d] quer produzir\n", id);
 
-    // imprime buffer
-    for(int i = 0; i < N; i++)
-        printf("%d ", Buffer[i]);
-    printf("\n");
+        // verificação para não extrapolar o elemProd
+        while(elemProd >= 5){;}
+    
+        //aguarda slot vazio
+        sem_wait(&slotVazio);
+        //exclusao mutua entre produtores
+        sem_wait(&mutex);
+        Buffer[in] = item;
+        in = (in + 1) % N;
+        printf("P[%d] produziu\n", id);
+        elemProd++;
+        printf("elementos produzidos = %d\n", elemProd);
+        // imprime buffer
+        ImprimeBuffer(N);
 
-    sem_post(&mutexProd);
-    //sinaliza um slot cheio
+        sem_post(&mutex);
+    }
+
+    //sinaliza um slot cheio se produzir tudo 
     sem_post(&slotCheio);
+    
 }
 
 
@@ -62,26 +66,26 @@ int Retira(int id){
     static int out=0;
 
     printf("C[%d] quer consumir\n", id);
+    while(elemProd < N){
+        ;
+    }
     //aguarda slot cheio
-    if(count == 0) printf("C[%d] bloqueou\n", id);
     sem_wait(&slotCheio);
-    printf("C[%d] desbloqueou\n", id);
     //exclusao mutua entre consumidores
-    sem_wait(&mutexCons);
+    sem_wait(&mutex);
     item = Buffer[out];
     Buffer[out] = 0;
     out = (out + 1) % N;
-    count--;
+    elemProd--;
+    printf("elementos produzidos = %d\n", elemProd);
     printf("C[%d] consumiu %d\n", id, item);
 
     // imprime buffer
-    for(int i = 0; i < N; i++)
-        printf("%d ", Buffer[i]);
-    printf("\n");
+    ImprimeBuffer(N); 
 
-    sem_post(&mutexCons);
+    sem_post(&mutex);
     //sinaliza um slot vazio
-    sem_post(&slotVazio);
+    sem_post(&slotVazio); 
 
     return item;
 }
@@ -129,8 +133,7 @@ int main(void){
     IniciaBuffer(N);
 
     // inicializa os semaforos
-    sem_init(&mutexProd, 0, 1);
-    sem_init(&mutexCons, 0, 1);
+    sem_init(&mutex, 0, 1);
     sem_init(&slotCheio, 0, 0);
     sem_init(&slotVazio, 0, N);
 
