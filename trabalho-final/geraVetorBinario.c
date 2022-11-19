@@ -52,6 +52,8 @@ int main(int argc, char*argv[]) {
         return 3;
     }
 
+    //escreve o tamanho do vetor
+    ret = fwrite(&tam, sizeof(long long int), 1, descritorArquivo);
     //escreve os elementos do vetor
     ret = fwrite(vetor, sizeof(float), tam, descritorArquivo);
     if(ret < tam) {
