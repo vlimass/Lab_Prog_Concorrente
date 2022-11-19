@@ -3,7 +3,7 @@
 #include<time.h>
 
 // valor máximo de um elemento do vetor
-#define MAX 1000000000
+#define MAX 1000
 
 //descomentar o define abaixo caso deseje imprimir uma versao truncada da matriz gerada no formato texto
 #define TEXTO 1
