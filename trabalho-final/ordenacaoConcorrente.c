@@ -102,6 +102,7 @@ void quick_sort(int vet[], int inicio, int fim){
 
 // fluxo das threads
 void * ordena (void * arg) {
+    int *id = (int *) arg;
 
     free(arg);
     pthread_exit(NULL);
