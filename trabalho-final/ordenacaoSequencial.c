@@ -59,6 +59,7 @@ int main(int argc, char * argv[]) {
     long long int tam; // tamanho do vetor 
     FILE * descritorArquivoEntrada, * descritorArquivoSaida; //descritores dos arquivos
     size_t retEntrada, retSaida; //retorno da funcao de leitura nos arquivos 
+    double inicio, fim, delta; // gerenciadores de tempo 
 
     // -- INICIALIZAÇÃO -- //
 
@@ -99,11 +100,17 @@ int main(int argc, char * argv[]) {
 
     // -- ORDENAÇÃO -- //
 
+    GET_TIME(inicio);
+
     // algoritmo merge sort
     mergeSort(vetor, 0, tam);
 
-    // imprime vetor ordenado
-    imprimeVetor(vetor, tam);
+    GET_TIME(fim);
+    delta = fim - inicio;
+    printf("Tempo de ordenação: %lf\n", delta);
+
+    // imprime vetor ordenado (descomentar se desejar visualizar!)
+    // imprimeVetor(vetor, tam);
 
     // -- FINALIZAÇÃO -- //
 

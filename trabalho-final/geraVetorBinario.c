@@ -8,6 +8,14 @@
 //descomentar o define abaixo caso deseje imprimir uma versao truncada da matriz gerada no formato texto
 #define TEXTO 1
 
+
+void imprimeVetor(int vet[], int tam){
+    for(int i = 0; i < tam; i++){
+        printf(" %d ", vet[i]); 
+    }
+    printf("\n");
+}
+
 int main(int argc, char*argv[]) {
     int *vetor; // vetor que será gerado
     long long int tam; //qtde de elementos do vetor
@@ -30,18 +38,14 @@ int main(int argc, char*argv[]) {
     }
 
     //preenche o vetor com valores inteiros aleatorios
-    //randomiza a sequencia de numeros aleatorios
     srand(time(NULL));
     for(long int i=0; i<tam; i++) {
         *(vetor+i) = rand() % MAX;
     }
 
-    //imprimir na saida padrao o vetor gerado
+    //imprimir na saida padrao o vetor gerado (descomentar se desejar visualizar!)
     #ifdef TEXTO
-    for(int i=0; i<tam; i++) {
-        fprintf(stdout, " %d ", vetor[i]);
-    }
-    fprintf(stdout, "\n");
+    // imprimeVetor(vetor, tam); 
     #endif
 
     //escreve o vetor no arquivo
