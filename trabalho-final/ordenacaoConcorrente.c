@@ -62,6 +62,13 @@ void mergeSort(int vet[], int inicio, int fim){
     }
 }
 
+// function to swap elements
+void troca(int *a, int *b) {
+  int t = *a;
+  *a = *b;
+  *b = t;
+}
+
 
 // parte do quick sort
 int particiona(int vet[], int inicio, int fim){
@@ -102,9 +109,16 @@ void quick_sort(int vet[], int inicio, int fim){
 
 // fluxo das threads
 void * ordena (void * arg) {
-    int *id = (int *) arg;
+    int id = *(int *) arg;
+    // printf("thread: %d\n", id);
+    int inicio = (tam / numThreads) * (id-1);
+    int fim = (tam / numThreads) * id;
 
-    free(arg);
+    quick_sort(vetor, inicio, fim);
+    
+    // imprimeVetor(vetor, tam);
+
+    // free(arg);
     pthread_exit(NULL);
 }
 
@@ -115,7 +129,7 @@ int main (int argc, char * argv[]) {
     size_t retEntrada, retSaida; //retorno da funcao de leitura nos arquivos 
     double inicio, fim, delta; // gerenciadores de tempo 
 
-    pthread_t *tid; // identificadores das threads 
+    // pthread_t *tid; // identificadores das threads 
 
     // -- INICIALIZAÇÃO -- //
 
@@ -127,7 +141,7 @@ int main (int argc, char * argv[]) {
 
     // recebe o número de threads
     numThreads = atoi(argv[3]);
-    printf("%d", numThreads);
+    //printf("%d\n", numThreads);
 
     //abre o arquivo para leitura binaria do vetor de entrada
     descritorArquivoEntrada = fopen(argv[1], "rb");
@@ -162,34 +176,31 @@ int main (int argc, char * argv[]) {
 
     GET_TIME(inicio);
 
-    // aloca identificadores das threads 
-    tid = (pthread_t *) malloc(sizeof(pthread_t) *numThreads);
-    if(tid == NULL){
-        fprintf(stderr, "ERRO--malloc\n");
-        return 2;
+    imprimeVetor(vetor, tam);
+
+    pthread_t tid[numThreads];
+    int ident[numThreads];
+    for(int i = 0; i < numThreads; i++){
+        ident[i] = i+1;
+        if(pthread_create(&tid[i], NULL, ordena, (void *)&ident[i]))
+            printf("ERRO -- pthread_create\n");
     }
 
-    // cria threads
-    for(long int i = 0; i < numThreads; i++){
-        if(pthread_create(tid+i, NULL, ordena, (void*) i)){
-            fprintf(stderr, "ERRO--pthread_create\n");
-            return 3;
+    for(int thread=0; thread<numThreads; thread++){
+        if(pthread_join(tid[thread], NULL)){
+            printf("--ERRO: pthread_join()"); 
+            exit(-1);
         }
     }
 
-    // aguardar o término das threads
-    for(long int i = 0; i < numThreads; i++){
-        if(pthread_join(*(tid+i), NULL)){
-            fprintf(stderr, "ERRO--pthread_join\n");
-        }
-    }
+    merge(vetor, 0, tam/2, tam);
 
     GET_TIME(fim);
     delta = fim - inicio;
     printf("Tempo de ordenação: %lf\n", delta);
 
     // imprime vetor ordenado (descomentar se desejar visualizar!)
-    // imprimeVetor(vetor, tam);
+    imprimeVetor(vetor, tam);
 
     // -- FINALIZAÇÃO -- //
 
@@ -214,7 +225,7 @@ int main (int argc, char * argv[]) {
     fclose(descritorArquivoEntrada);
     fclose(descritorArquivoSaida);
     free(vetor);
-    free(tid);
+    // free(tid);
 
     return 0;
 }
