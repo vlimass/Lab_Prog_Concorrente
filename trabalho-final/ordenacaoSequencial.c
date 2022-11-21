@@ -165,7 +165,7 @@ int main(int argc, char * argv[]) {
 
     // algoritmo merge sort
     // mergeSort(vetor, 0, tam);
-    quickSort(vetor, 0, tam);
+    quickSort(vetor, 0, tam-1);
 
     GET_TIME(fim);
     delta = fim - inicio;

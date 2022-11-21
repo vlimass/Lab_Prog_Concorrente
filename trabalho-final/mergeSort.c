@@ -1,16 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
-#include <time.h>
 #include "timer.h"
 
-int * vetor;
-int numThreads; // número de threads
-long long int tam; // tamanho do vetor 
-int aux = 1; // variável auxiliar para verificar subdivisão do vetor 
-
-
-// função para impressão do vetor 
 void imprimeVetor(int vet[], int tam){
     for(int i = 0; i < tam; i++){
         printf(" %d ", vet[i]); 
@@ -19,7 +10,6 @@ void imprimeVetor(int vet[], int tam){
 }
 
 
-// parte do merge sort 
 void merge(int vet[], int inicio, int meio, int fim){
     //criando um vetor auxiliar e copiando o vetor original
     int *tmp;
@@ -52,7 +42,7 @@ void merge(int vet[], int inicio, int meio, int fim){
     free(tmp);
 }
 
-// algoritmo merge sort 
+
 void mergeSort(int vet[], int inicio, int fim){
     if(inicio < (fim - 1)){
         int meio = (inicio + fim)/ 2;
@@ -63,85 +53,81 @@ void mergeSort(int vet[], int inicio, int fim){
 }
 
 // function to swap elements
-void troca(int *a, int *b) {
+void swap(int *a, int *b) {
   int t = *a;
   *a = *b;
   *b = t;
 }
 
+// function to find the partition position
+int partition(int array[], int low, int high) {
+  
+  // select the rightmost element as pivot
+  int pivot = array[high];
+  
+  // pointer for greater element
+  int i = (low - 1);
 
-// parte do quick sort
-int particiona(int vet[], int inicio, int fim){
-    //pivot randomico
-    int p = inicio + rand()%(fim - inicio + 1);
-    troca(&vet[inicio], &vet[p]);
-    
-    int pivot = vet[inicio];
-    int i = inicio;
-    int j = fim ;
-    
-    while(i < j){
-        while(i < fim && vet[i] <= pivot){
-            i++;
-        }
-        while(j > inicio && vet[j] >= pivot){
-            j--;
-        }
-        if(i < j){
-            troca(&vet[i], &vet[j]);
-        }
+  // traverse each element of the array
+  // compare them with the pivot
+  for (int j = low; j < high; j++) {
+    if (array[j] <= pivot) {
+        
+      // if element smaller than pivot is found
+      // swap it with the greater element pointed by i
+      i++;
+      
+      // swap element at i with element at j
+      swap(&array[i], &array[j]);
     }
-    vet[inicio] = vet[j];
-    vet[j] = pivot;
+  }
 
-    return j; 
+  // swap the pivot element with the greater element at i
+  swap(&array[i + 1], &array[high]);
+  
+  // return the partition point
+  return (i + 1);
 }
 
-// algoritmo quick sort 
-void quick_sort(int vet[], int inicio, int fim){
-    if(inicio < fim){
-        int pivot = particiona(vet, inicio, fim);
-        quick_sort(vet, inicio, pivot - 1);
-        quick_sort(vet, pivot + 1, fim);
-    }
-}
-
-
-// fluxo das threads
-void * ordena (void * arg) {
-    int id = *(int *) arg;
-    // printf("thread: %d\n", id);
-    int inicio = (tam / numThreads) * (id-1);
-    int fim = (tam / numThreads) * id;
-
-    quick_sort(vetor, inicio, fim-1);
+void quickSort(int array[], int low, int high) {
+  if (low < high) {
     
-    // imprimeVetor(vetor, tam);
+    // find the pivot element such that
+    // elements smaller than pivot are on left of pivot
+    // elements greater than pivot are on right of pivot
+    int pi = partition(array, low, high);
+    
+    // recursive call on the left of pivot
+    quickSort(array, low, pi - 1);
+    
+    // recursive call on the right of pivot
+    quickSort(array, pi + 1, high);
+  }
+}
 
-    // free(arg);
-    pthread_exit(NULL);
+// function to print array elements
+void printArray(int array[], int size) {
+  for (int i = 0; i < size; ++i) {
+    printf("%d  ", array[i]);
+  }
+  printf("\n");
 }
 
 
-// fluxo principal
-int main (int argc, char * argv[]) { 
+int main(int argc, char * argv[]) { 
+    int * vetor;
+    long long int tam; // tamanho do vetor 
     FILE * descritorArquivoEntrada, * descritorArquivoSaida; //descritores dos arquivos
     size_t retEntrada, retSaida; //retorno da funcao de leitura nos arquivos 
     double inicio, fim, delta; // gerenciadores de tempo 
 
-    // pthread_t *tid; // identificadores das threads 
-
     // -- INICIALIZAÇÃO -- //
 
     //recebe os argumentos de entrada
-    if(argc < 4) {
-        fprintf(stderr, "Digite: %s <arquivo vetor entrada> <arquivo vetor saida> <numero threads>\n", argv[0]);
+    if(argc < 3) {
+        fprintf(stderr, "Digite: %s <arquivo vetor entrada> <arquivo vetor saida>\n", argv[0]);
         return 1;
     }
-
-    // recebe o número de threads
-    numThreads = atoi(argv[3]);
-    //printf("%d\n", numThreads);
 
     //abre o arquivo para leitura binaria do vetor de entrada
     descritorArquivoEntrada = fopen(argv[1], "rb");
@@ -176,24 +162,9 @@ int main (int argc, char * argv[]) {
 
     GET_TIME(inicio);
 
-    // imprimeVetor(vetor, tam);
-
-    pthread_t tid[numThreads];
-    int ident[numThreads];
-    for(int i = 0; i < numThreads; i++){
-        ident[i] = i+1;
-        if(pthread_create(&tid[i], NULL, ordena, (void *)&ident[i]))
-            printf("ERRO -- pthread_create\n");
-    }
-
-    for(int thread=0; thread<numThreads; thread++){
-        if(pthread_join(tid[thread], NULL)){
-            printf("--ERRO: pthread_join()"); 
-            exit(-1);
-        }
-    }
-
-    merge(vetor, 0, tam/2, tam);
+    // algoritmo merge sort
+    mergeSort(vetor, 0, tam);
+    // quickSort(vetor, 0, tam);
 
     GET_TIME(fim);
     delta = fim - inicio;
@@ -225,7 +196,6 @@ int main (int argc, char * argv[]) {
     fclose(descritorArquivoEntrada);
     fclose(descritorArquivoSaida);
     free(vetor);
-    // free(tid);
 
     return 0;
 }
