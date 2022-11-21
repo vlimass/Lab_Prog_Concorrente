@@ -5,10 +5,6 @@
 // valor máximo de um elemento do vetor
 #define MAX 1000
 
-//descomentar o define abaixo caso deseje imprimir uma versao truncada da matriz gerada no formato texto
-#define TEXTO 1
-
-
 void imprimeVetor(int vet[], int tam){
     for(int i = 0; i < tam; i++){
         printf(" %d ", vet[i]); 
@@ -44,9 +40,7 @@ int main(int argc, char*argv[]) {
     }
 
     //imprimir na saida padrao o vetor gerado (descomentar se desejar visualizar!)
-    #ifdef TEXTO
     // imprimeVetor(vetor, tam); 
-    #endif
 
     //escreve o vetor no arquivo
     //abre o arquivo para escrita binaria
