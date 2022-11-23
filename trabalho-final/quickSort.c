@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include<time.h>
 #include "timer.h"
 
-
+// Função para mostrar um log do vetor
 void imprimeVetor(int vet[], int tam){
     for(int i = 0; i < tam; i++){
         printf(" %d ", vet[i]); 
@@ -11,110 +12,49 @@ void imprimeVetor(int vet[], int tam){
 }
 
 
-void merge(int vet[], int inicio, int meio, int fim){
-    //criando um vetor auxiliar e copiando o vetor original
-    int *tmp;
-    tmp = (int*)malloc(sizeof(int) * (fim - inicio));
+// Funções para o Quick Sort
+void troca(int *a, int *b){
+    int tmp = *a;
+    *a = *b;
+    *b = tmp;
+}
 
+int particiona(int vet[], int inicio, int fim){
+    //pivot randomico
+    srand(time(NULL));
+    int p = inicio + rand()%(fim - inicio + 1);
+    troca(&vet[inicio], &vet[p]);
+
+    int pivot = vet[inicio];
     int i = inicio;
-    int j = meio;
-    int pos = 0;
+    int j = fim ;
 
-    while(i < meio && j < fim){
-        if(vet[i] <= vet[j]){
-            tmp[pos++] = vet[i++];
-        } else{
-            tmp[pos++] = vet[j++];
+    while(i < j){
+        while(i < fim && vet[i] <= pivot){
+            i++;
+        }
+        while(j > inicio && vet[j] >= pivot){
+            j--;
+        }
+        if(i < j){
+            troca(&vet[i], &vet[j]);
         }
     }
-
-    while(i < meio){
-        tmp[pos++] = vet[i++];
-    }
-
-    while(j < fim){
-        tmp[pos++] = vet[j++];
-    }
-
-    for(i = inicio; i < fim; i++){
-        vet[i] = tmp[i - inicio];
-    }
-
-    free(tmp);
+    vet[inicio] = vet[j];
+    vet[j] = pivot;
+    return j; 
 }
 
-
-void mergeSort(int vet[], int inicio, int fim){
-    if(inicio < (fim - 1)){
-        int meio = (inicio + fim)/ 2;
-        mergeSort(vet, inicio, meio);
-        mergeSort(vet, meio, fim);
-        merge(vet, inicio, meio, fim);
+void quickSort(int vet[], int inicio, int fim){
+    if(inicio < fim){
+        int pivot = particiona(vet, inicio, fim);
+        quickSort(vet, inicio, pivot - 1);
+        quickSort(vet, pivot + 1, fim);
     }
 }
 
-// function to swap elements
-void swap(int *a, int *b) {
-  int t = *a;
-  *a = *b;
-  *b = t;
-}
 
-// function to find the partition position
-int partition(int array[], int low, int high) {
-  
-  // select the rightmost element as pivot
-  int pivot = array[high];
-  
-  // pointer for greater element
-  int i = (low - 1);
-
-  // traverse each element of the array
-  // compare them with the pivot
-  for (int j = low; j < high; j++) {
-    if (array[j] <= pivot) {
-        
-      // if element smaller than pivot is found
-      // swap it with the greater element pointed by i
-      i++;
-      
-      // swap element at i with element at j
-      swap(&array[i], &array[j]);
-    }
-  }
-
-  // swap the pivot element with the greater element at i
-  swap(&array[i + 1], &array[high]);
-  
-  // return the partition point
-  return (i + 1);
-}
-
-void quickSort(int array[], int low, int high) {
-  if (low < high) {
-    
-    // find the pivot element such that
-    // elements smaller than pivot are on left of pivot
-    // elements greater than pivot are on right of pivot
-    int pi = partition(array, low, high);
-    
-    // recursive call on the left of pivot
-    quickSort(array, low, pi - 1);
-    
-    // recursive call on the right of pivot
-    quickSort(array, pi + 1, high);
-  }
-}
-
-// function to print array elements
-void printArray(int array[], int size) {
-  for (int i = 0; i < size; ++i) {
-    printf("%d  ", array[i]);
-  }
-  printf("\n");
-}
-
-
+// Fluxo principal
 int main(int argc, char * argv[]) { 
     int * vetor;
     long long int tam; // tamanho do vetor 
@@ -163,8 +103,7 @@ int main(int argc, char * argv[]) {
 
     GET_TIME(inicio);
 
-    // algoritmo merge sort
-    // mergeSort(vetor, 0, tam);
+    // algoritmo quick Sort
     quickSort(vetor, 0, tam-1);
 
     GET_TIME(fim);

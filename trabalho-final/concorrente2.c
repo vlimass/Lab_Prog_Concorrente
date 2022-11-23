@@ -1,16 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
+#include <math.h>
 #include <time.h>
 #include "timer.h"
 
 int * vetor;
 int numThreads; // número de threads
+int threadsMerges;
 long long int tam; // tamanho do vetor 
-int aux = 1; // variável auxiliar para verificar subdivisão do vetor no merge
 
 
-// função para impressão do vetor 
+// Função para mostrar um log do vetor
 void imprimeVetor(int vet[], int tam){
     for(int i = 0; i < tam; i++){
         printf(" %d ", vet[i]); 
@@ -19,7 +20,49 @@ void imprimeVetor(int vet[], int tam){
 }
 
 
-// parte do merge sort 
+// Funções para o Quick Sort
+void troca(int *a, int *b) {
+  int t = *a;
+  *a = *b;
+  *b = t;
+}
+
+int particiona(int vet[], int inicio, int fim){
+    //pivot randomico
+    int p = inicio + rand()%(fim - inicio + 1);
+    troca(&vet[inicio], &vet[p]);
+    
+    int pivot = vet[inicio];
+    int i = inicio;
+    int j = fim ;
+    
+    while(i < j){
+        while(i < fim && vet[i] <= pivot){
+            i++;
+        }
+        while(j > inicio && vet[j] >= pivot){
+            j--;
+        }
+        if(i < j){
+            troca(&vet[i], &vet[j]);
+        }
+    }
+    vet[inicio] = vet[j];
+    vet[j] = pivot;
+
+    return j; 
+}
+
+void quickSort(int vet[], int inicio, int fim){
+    if(inicio < fim){
+        int pivot = particiona(vet, inicio, fim);
+        quickSort(vet, inicio, pivot - 1);
+        quickSort(vet, pivot + 1, fim);
+    }
+}
+
+
+// Função para o merge dos blocos 
 void merge(int vet[], int inicio, int meio, int fim){
     //criando um vetor auxiliar e copiando o vetor original
     int *tmp;
@@ -52,91 +95,43 @@ void merge(int vet[], int inicio, int meio, int fim){
     free(tmp);
 }
 
-// algoritmo merge sort 
-void mergeSort(int vet[], int inicio, int meio, int fim){
-    // if(inicio < (fim - 1)){
-    //     int meio = (inicio + fim)/ 2; 
-    //     mergeSort(vet, inicio, meio);
-    //     mergeSort(vet, meio, fim);
-    //     merge(vet, inicio, meio, fim);
-    // }
-    imprimeVetor(vet, tam);
 
-    if(fim <= tam){ 
-        merge(vet, inicio, meio, fim);
-        mergeSort(vet, inicio, fim, fim + tam/numThreads);
-    }
-
-}
-
-// function to swap elements
-void troca(int *a, int *b) {
-  int t = *a;
-  *a = *b;
-  *b = t;
-}
-
-
-// parte do quick sort
-int particiona(int vet[], int inicio, int fim){
-    //pivot randomico
-    int p = inicio + rand()%(fim - inicio + 1);
-    troca(&vet[inicio], &vet[p]);
-    
-    int pivot = vet[inicio];
-    int i = inicio;
-    int j = fim ;
-    
-    while(i < j){
-        while(i < fim && vet[i] <= pivot){
-            i++;
-        }
-        while(j > inicio && vet[j] >= pivot){
-            j--;
-        }
-        if(i < j){
-            troca(&vet[i], &vet[j]);
-        }
-    }
-    vet[inicio] = vet[j];
-    vet[j] = pivot;
-
-    return j; 
-}
-
-// algoritmo quick sort 
-void quick_sort(int vet[], int inicio, int fim){
-    if(inicio < fim){
-        int pivot = particiona(vet, inicio, fim);
-        quick_sort(vet, inicio, pivot - 1);
-        quick_sort(vet, pivot + 1, fim);
-    }
-}
-
-
-// fluxo das threads
+// Fluxo das threads
 void * ordena (void * arg) {
     int id = *(int *) arg;
-    // printf("thread: %d\n", id);
+
     int inicio = (tam / numThreads) * (id-1);
     int fim = (tam / numThreads) * id;
 
-    quick_sort(vetor, inicio, fim-1);
+    quickSort(vetor, inicio, fim-1);
     
     // imprimeVetor(vetor, tam);
 
-    // free(arg);
+    pthread_exit(NULL);
+}
+
+void * mergeThread (void * arg) {
+    int id = *(int *) arg;
+
+    int inicio = (tam / threadsMerges) * (id-1);
+    int fim = (tam / threadsMerges) * id;
+    int meio = (inicio + fim) / 2;
+
+    // printf("i = %d, m = %d, f = %d\n", inicio, meio, fim);
+    
+    merge(vetor, inicio, meio, fim);
+
+    // imprimeVetor(vetor, tam);
+
     pthread_exit(NULL);
 }
 
 
-// fluxo principal
+// Fluxo principal
 int main (int argc, char * argv[]) { 
     FILE * descritorArquivoEntrada, * descritorArquivoSaida; //descritores dos arquivos
     size_t retEntrada, retSaida; //retorno da funcao de leitura nos arquivos 
     double inicio, fim, delta; // gerenciadores de tempo 
-
-    // pthread_t *tid; // identificadores das threads 
 
     // -- INICIALIZAÇÃO -- //
 
@@ -201,14 +196,33 @@ int main (int argc, char * argv[]) {
     }
 
     // Merge dos pedaços
-    mergeSort(vetor, 0, tam/numThreads, 2 * (tam / numThreads));
+    int hMerges = ceil(sqrt(numThreads));
+    threadsMerges = numThreads / 2;
+    while(hMerges > 0){
+        for(int i = 0; i < threadsMerges; i++){
+            ident[i] = i+1;
+            if(pthread_create(&tid[i], NULL, mergeThread, (void *)&ident[i]))
+                printf("ERRO -- pthread_create\n");
+        }
+
+        for(int thread=0; thread<threadsMerges; thread++){
+            if(pthread_join(tid[thread], NULL)){
+                printf("--ERRO: pthread_join()"); 
+                exit(-1);
+            }
+        }
+
+        threadsMerges = threadsMerges / 2;
+        hMerges--;
+    }
+
 
     GET_TIME(fim);
     delta = fim - inicio;
     printf("Tempo de ordenação: %lf\n", delta);
 
     // imprime vetor ordenado (descomentar se desejar visualizar!)
-    imprimeVetor(vetor, tam);
+    // imprimeVetor(vetor, tam);
 
     // -- FINALIZAÇÃO -- //
 

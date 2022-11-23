@@ -5,6 +5,8 @@
 // valor máximo de um elemento do vetor
 #define MAX 1000
 
+
+// Função para mostrar log do vetor
 void imprimeVetor(int vet[], int tam){
     for(int i = 0; i < tam; i++){
         printf(" %d ", vet[i]); 
@@ -12,6 +14,8 @@ void imprimeVetor(int vet[], int tam){
     printf("\n");
 }
 
+
+// Fluxo principal
 int main(int argc, char*argv[]) {
     int *vetor; // vetor que será gerado
     long long int tam; //qtde de elementos do vetor
@@ -40,7 +44,7 @@ int main(int argc, char*argv[]) {
     }
 
     //imprimir na saida padrao o vetor gerado (descomentar se desejar visualizar!)
-    imprimeVetor(vetor, tam); 
+    // imprimeVetor(vetor, tam); 
 
     //escreve o vetor no arquivo
     //abre o arquivo para escrita binaria

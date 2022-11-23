@@ -1,6 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
+#include <time.h>
 #include "timer.h"
+
+int * vetor;
+int numThreads; // número de threads
+long long int tam; // tamanho do vetor 
+
 
 // Função para mostrar um log do vetor
 void imprimeVetor(int vet[], int tam){
@@ -11,7 +18,49 @@ void imprimeVetor(int vet[], int tam){
 }
 
 
-// Funções para o merge Sort
+// Funções para o Quick Sort
+void troca(int *a, int *b) {
+  int t = *a;
+  *a = *b;
+  *b = t;
+}
+
+int particiona(int vet[], int inicio, int fim){
+    //pivot randomico
+    int p = inicio + rand()%(fim - inicio + 1);
+    troca(&vet[inicio], &vet[p]);
+    
+    int pivot = vet[inicio];
+    int i = inicio;
+    int j = fim ;
+    
+    while(i < j){
+        while(i < fim && vet[i] <= pivot){
+            i++;
+        }
+        while(j > inicio && vet[j] >= pivot){
+            j--;
+        }
+        if(i < j){
+            troca(&vet[i], &vet[j]);
+        }
+    }
+    vet[inicio] = vet[j];
+    vet[j] = pivot;
+
+    return j; 
+}
+
+void quickSort(int vet[], int inicio, int fim){
+    if(inicio < fim){
+        int pivot = particiona(vet, inicio, fim);
+        quickSort(vet, inicio, pivot - 1);
+        quickSort(vet, pivot + 1, fim);
+    }
+}
+
+
+// Funções para merge dos blocos após ordenação das threads
 void merge(int vet[], int inicio, int meio, int fim){
     //criando um vetor auxiliar e copiando o vetor original
     int *tmp;
@@ -44,20 +93,32 @@ void merge(int vet[], int inicio, int meio, int fim){
     free(tmp);
 }
 
-void mergeSort(int vet[], int inicio, int fim){
-    if(inicio < (fim - 1)){
-        int meio = (inicio + fim)/ 2;
-        mergeSort(vet, inicio, meio);
-        mergeSort(vet, meio, fim);
+void mergeBlocos(int vet[], int inicio, int meio, int fim){
+    // imprimeVetor(vet, tam);
+
+    if(fim <= tam){ 
         merge(vet, inicio, meio, fim);
+        mergeBlocos(vet, inicio, fim, fim + tam/numThreads);
     }
 }
 
 
-// Fluxo principal
-int main(int argc, char * argv[]) { 
-    int * vetor;
-    long long int tam; // tamanho do vetor 
+// Fluxo das threads
+void * ordena (void * arg) {
+    int id = *(int *) arg;
+
+    int inicio = (tam / numThreads) * (id-1);
+    int fim = (tam / numThreads) * id;
+
+    quickSort(vetor, inicio, fim-1);
+    
+    // imprimeVetor(vetor, tam);
+
+    pthread_exit(NULL);
+}
+
+// fluxo principal
+int main (int argc, char * argv[]) { 
     FILE * descritorArquivoEntrada, * descritorArquivoSaida; //descritores dos arquivos
     size_t retEntrada, retSaida; //retorno da funcao de leitura nos arquivos 
     double inicio, fim, delta; // gerenciadores de tempo 
@@ -65,10 +126,14 @@ int main(int argc, char * argv[]) {
     // -- INICIALIZAÇÃO -- //
 
     //recebe os argumentos de entrada
-    if(argc < 3) {
-        fprintf(stderr, "Digite: %s <arquivo vetor entrada> <arquivo vetor saida>\n", argv[0]);
+    if(argc < 4) {
+        fprintf(stderr, "Digite: %s <arquivo vetor entrada> <arquivo vetor saida> <numero threads>\n", argv[0]);
         return 1;
     }
+
+    // recebe o número de threads
+    numThreads = atoi(argv[3]);
+    //printf("%d\n", numThreads);
 
     //abre o arquivo para leitura binaria do vetor de entrada
     descritorArquivoEntrada = fopen(argv[1], "rb");
@@ -103,8 +168,26 @@ int main(int argc, char * argv[]) {
 
     GET_TIME(inicio);
 
-    // algoritmo merge sort
-    mergeSort(vetor, 0, tam);
+    // imprimeVetor(vetor, tam);
+
+    pthread_t tid[numThreads];
+    int ident[numThreads];
+    for(int i = 0; i < numThreads; i++){
+        ident[i] = i+1;
+        if(pthread_create(&tid[i], NULL, ordena, (void *)&ident[i]))
+            printf("ERRO -- pthread_create\n");
+    }
+
+    for(int thread=0; thread<numThreads; thread++){
+        if(pthread_join(tid[thread], NULL)){
+            printf("--ERRO: pthread_join()"); 
+            exit(-1);
+        }
+    }
+
+    // Merge dos blocos restantes
+    mergeBlocos(vetor, 0, tam/numThreads, 2 * (tam / numThreads));
+
 
     GET_TIME(fim);
     delta = fim - inicio;
@@ -112,6 +195,7 @@ int main(int argc, char * argv[]) {
 
     // imprime vetor ordenado (descomentar se desejar visualizar!)
     // imprimeVetor(vetor, tam);
+
 
     // -- FINALIZAÇÃO -- //
 
@@ -136,6 +220,7 @@ int main(int argc, char * argv[]) {
     fclose(descritorArquivoEntrada);
     fclose(descritorArquivoSaida);
     free(vetor);
+    // free(tid);
 
     return 0;
 }
