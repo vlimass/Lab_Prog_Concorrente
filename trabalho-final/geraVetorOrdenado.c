@@ -33,13 +33,12 @@ int main(int argc, char*argv[]) {
     }
 
     //preenche o vetor com valores inteiros aleatorios
-    srand(time(NULL));
     for(long int i=0; i<tam; i++) {
         *(vetor+i) = i+1;
     }
 
     //imprimir na saida padrao o vetor gerado (descomentar se desejar visualizar!)
-    // imprimeVetor(vetor, tam);
+    imprimeVetor(vetor, tam);
 
     //escreve o vetor no arquivo
     //abre o arquivo para escrita binaria

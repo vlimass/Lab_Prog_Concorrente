@@ -40,7 +40,7 @@ int main(int argc, char*argv[]) {
     }
 
     //imprimir na saida padrao o vetor gerado (descomentar se desejar visualizar!)
-    // imprimeVetor(vetor, tam); 
+    imprimeVetor(vetor, tam); 
 
     //escreve o vetor no arquivo
     //abre o arquivo para escrita binaria

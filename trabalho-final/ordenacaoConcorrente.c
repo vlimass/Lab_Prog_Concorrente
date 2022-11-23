@@ -7,7 +7,7 @@
 int * vetor;
 int numThreads; // número de threads
 long long int tam; // tamanho do vetor 
-int aux = 1; // variável auxiliar para verificar subdivisão do vetor 
+int aux = 1; // variável auxiliar para verificar subdivisão do vetor no merge
 
 
 // função para impressão do vetor 
@@ -53,13 +53,20 @@ void merge(int vet[], int inicio, int meio, int fim){
 }
 
 // algoritmo merge sort 
-void mergeSort(int vet[], int inicio, int fim){
-    if(inicio < (fim - 1)){
-        int meio = (inicio + fim)/ 2;
-        mergeSort(vet, inicio, meio);
-        mergeSort(vet, meio, fim);
+void mergeSort(int vet[], int inicio, int meio, int fim){
+    // if(inicio < (fim - 1)){
+    //     int meio = (inicio + fim)/ 2; 
+    //     mergeSort(vet, inicio, meio);
+    //     mergeSort(vet, meio, fim);
+    //     merge(vet, inicio, meio, fim);
+    // }
+    imprimeVetor(vet, tam);
+
+    if(fim <= tam){ 
         merge(vet, inicio, meio, fim);
+        mergeSort(vet, inicio, fim, fim + tam/numThreads);
     }
+
 }
 
 // function to swap elements
@@ -193,14 +200,15 @@ int main (int argc, char * argv[]) {
         }
     }
 
-    merge(vetor, 0, tam/2, tam);
+    // Merge dos pedaços
+    mergeSort(vetor, 0, tam/numThreads, 2 * (tam / numThreads));
 
     GET_TIME(fim);
     delta = fim - inicio;
     printf("Tempo de ordenação: %lf\n", delta);
 
     // imprime vetor ordenado (descomentar se desejar visualizar!)
-    // imprimeVetor(vetor, tam);
+    imprimeVetor(vetor, tam);
 
     // -- FINALIZAÇÃO -- //
 
