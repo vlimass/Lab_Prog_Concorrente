@@ -17,7 +17,6 @@ void imprimeVetor(int vet[], int tam){
     printf("\n");
 }
 
-
 // Funções para o Quick Sort
 void troca(int *a, int *b) {
   int t = *a;
@@ -94,11 +93,12 @@ void merge(int vet[], int inicio, int meio, int fim){
 }
 
 void mergeBlocos(int vet[], int inicio, int meio, int fim){
-    // imprimeVetor(vet, tam);
-
     if(fim <= tam){ 
         merge(vet, inicio, meio, fim);
         mergeBlocos(vet, inicio, fim, fim + tam/numThreads);
+    }
+    else if(tam - meio > 0){
+        merge(vet, inicio, meio, tam);
     }
 }
 
@@ -108,11 +108,9 @@ void * ordena (void * arg) {
     int id = *(int *) arg;
 
     int inicio = (tam / numThreads) * (id-1);
-    int fim = (tam / numThreads) * id;
+    int fim = numThreads == id ? tam : (tam / numThreads) * id;
 
     quickSort(vetor, inicio, fim-1);
-    
-    // imprimeVetor(vetor, tam);
 
     pthread_exit(NULL);
 }
@@ -133,7 +131,6 @@ int main (int argc, char * argv[]) {
 
     // recebe o número de threads
     numThreads = atoi(argv[3]);
-    //printf("%d\n", numThreads);
 
     //abre o arquivo para leitura binaria do vetor de entrada
     descritorArquivoEntrada = fopen(argv[1], "rb");
@@ -167,8 +164,6 @@ int main (int argc, char * argv[]) {
     // -- ORDENAÇÃO -- //
 
     GET_TIME(inicio);
-
-    // imprimeVetor(vetor, tam);
 
     pthread_t tid[numThreads];
     int ident[numThreads];
@@ -220,7 +215,6 @@ int main (int argc, char * argv[]) {
     fclose(descritorArquivoEntrada);
     fclose(descritorArquivoSaida);
     free(vetor);
-    // free(tid);
 
     return 0;
 }
