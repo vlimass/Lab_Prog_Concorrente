@@ -119,7 +119,7 @@ class Consumidor extends Thread {
 
 
 class ProdutorConsumidor {
-    static final int numProdutores = 5, numConsumidores = 1;
+    static final int numProdutores = 3, numConsumidores = 3;
     public static void main(String[] args) {
         //reserva espaço para um vetor de threads
         Thread[] produtores = new Thread[numProdutores];
